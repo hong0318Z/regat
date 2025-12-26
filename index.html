@@ -751,6 +751,7 @@
       <div class="tabs">
         <button class="tab-btn active" data-tab="api" data-i18n="apiSettings">API Settings</button>
         <button class="tab-btn" data-tab="prompts" data-i18n="promptManagement">Prompt Management</button>
+        <button class="tab-btn" data-tab="aiinstructions" data-i18n="aiInstructions">AI Instructions</button>
         <button class="tab-btn" data-tab="system" data-i18n="systemPrompt">System Prompt</button>
       </div>
 
@@ -764,9 +765,16 @@
         <div class="input-group">
           <label data-i18n="model">Model</label>
           <select id="modelSelect" style="width: 100%; padding: 12px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px;">
-            <option value="claude-sonnet-4-5-20250514">Claude Sonnet 4.5</option>
-            <option value="claude-opus-4-5-20251101">Claude Opus 4.5</option>
+            <option value="claude-opus-4-5-20251101">Claude Opus 4.5 (Best - Coding, Agents)</option>
+            <option value="claude-sonnet-4-5-20250929">Claude Sonnet 4.5 (Balanced)</option>
+            <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+            <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fast, Low Cost)</option>
           </select>
+        </div>
+        <div class="input-group">
+          <label data-i18n="maxTokens">Maximum Output Tokens</label>
+          <input type="number" id="maxTokensInput" min="256" max="8192" step="256" value="4096" style="width: 100%; padding: 12px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px;">
+          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;" data-i18n="maxTokensNote">Controls the maximum length of the AI response (256-8192 tokens).</p>
         </div>
         <button class="btn btn-primary" id="saveApiBtn" data-i18n="saveApiSettings">Save API Settings</button>
       </div>
@@ -780,6 +788,60 @@
         <div class="prompt-list" id="promptList"></div>
 
         <button class="btn btn-secondary" id="addPromptBtn">+ <span data-i18n="addNewPrompt">Add New Prompt</span></button>
+      </div>
+
+      <!-- AI Instructions Tab -->
+      <div class="tab-content" id="tab-aiinstructions">
+        <p style="color: var(--text-secondary); margin-bottom: 15px;" data-i18n="aiInstructionsDescription">
+          Create custom AI instruction sets for generating formatted data blocks. These instructions help AI produce structured outputs based on specific patterns and rules.
+        </p>
+
+        <div class="input-group">
+          <label data-i18n="instructionName">Instruction Set Name</label>
+          <input type="text" id="aiInstructionName" placeholder="e.g., Status Window Generator" value="Status Window Generator">
+        </div>
+
+        <div class="input-group">
+          <label data-i18n="instructionRegexFormat">Regular Expression Format</label>
+          <input type="text" id="aiInstructionRegex" placeholder="e.g., [SystemName:key1=value1|key2=value2|key3=value3]" value="[SystemName:key1=value1|key2=value2|key3=value3]">
+          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;" data-i18n="instructionRegexNote">Define the format pattern your AI should generate. Use proper escaping for special characters.</p>
+        </div>
+
+        <div class="input-group">
+          <label data-i18n="instructionTrigger">Trigger Keyword</label>
+          <input type="text" id="aiInstructionTrigger" placeholder="e.g., /상태창" value="/상태창">
+          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;" data-i18n="instructionTriggerNote">The keyword that activates this instruction set.</p>
+        </div>
+
+        <div class="input-group">
+          <label data-i18n="instructionRules">Formatting Rules & Guidelines</label>
+          <textarea id="aiInstructionRules" class="code-input" style="min-height: 250px;" placeholder="Enter your formatting rules...">CRITICAL RULE: The placement of the formatted output block is determined by the user's explicit request. If the user has not specified a particular location (e.g., at the beginning, middle, or end of the response), the AI should use its judgment, considering the context and natural flow of the conversation, to determine the most appropriate placement. This is the most important instruction.
+
+Detailed Rules:
+1. Format Adherence: The output must strictly follow the regular expression format provided.
+2. Placement: The formatted output block should only be generated when explicitly requested by the user. By default, place it at the most natural position in the response, but if the user specifies a particular location, that instruction must be followed.
+3. Content: All content must be written in Korean and should contain objective, factual information.
+4. Empty Fields: Items with no information or that are not applicable should be marked as '없음' (None) or '해당 없음' (Not Applicable).
+5. Escaping: Be careful with special characters in regex patterns. Properly escape brackets [], parentheses (), pipes |, and backslashes \\.
+6. Validation: Ensure all required fields are present before generating the output.
+
+Examples:
+Good: [StatusWindow:시간=2024-12-10 14:30|위치=카페|캐릭터=김민지]
+Bad: [StatusWindow:시간=2024-12-10 14:30|위치=카페] (Missing required character field)</textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="toggle-switch" style="width: auto; height: auto; display: flex; align-items: center; gap: 10px;">
+            <span data-i18n="enableInstruction">Enable this instruction set</span>
+            <div class="toggle-switch">
+              <input type="checkbox" id="aiInstructionEnabled" checked>
+              <span class="toggle-slider"></span>
+            </div>
+          </label>
+        </div>
+
+        <button class="btn btn-primary" id="saveAiInstructionBtn" data-i18n="saveAiInstruction">Save AI Instruction</button>
+        <button class="btn btn-secondary" id="testAiInstructionBtn" style="margin-left: 10px;" data-i18n="testAiInstruction">Test Instruction</button>
       </div>
 
       <!-- System Prompt Tab -->
@@ -820,6 +882,8 @@
         context: '컨텍스트',
         messages: '메시지',
         clearCache: '캐시 초기화',
+        maxTokens: '최대 출력 토큰',
+        maxTokensNote: 'AI 응답의 최대 길이를 제어합니다 (256-8192 토큰).',
         regexConfig: '정규식 설정',
         regexPattern: '정규식 (입력 패턴)',
         regexPlaceholder: '정규식 패턴을 입력하세요...',
@@ -844,6 +908,7 @@
         noLogs: '아직 로그가 없습니다. Claude에 메시지를 보내면 디버그 출력을 볼 수 있습니다.',
         apiSettings: 'API 설정',
         promptManagement: '프롬프트 관리',
+        aiInstructions: 'AI 지시사항',
         systemPrompt: '시스템 프롬프트',
         claudeApiKey: 'Claude API 키',
         apiKeyNote: 'API 키는 브라우저에 로컬로 저장됩니다.',
@@ -873,7 +938,18 @@
         noMatch: '샘플 텍스트와 매칭되는 항목이 없습니다.',
         invalidRegex: '잘못된 정규식:',
         enterRegexCode: '정규식과 코드를 입력하여 프리뷰를 확인하세요...',
-        apiKeyRequired: 'API 키가 설정되지 않았습니다. 설정에서 API 키를 입력하세요.'
+        apiKeyRequired: 'API 키가 설정되지 않았습니다. 설정에서 API 키를 입력하세요.',
+        aiInstructionsDescription: '포맷된 데이터 블록 생성을 위한 맞춤형 AI 지시 세트를 만듭니다. 이러한 지시사항은 AI가 특정 패턴과 규칙에 따라 구조화된 출력을 생성하도록 돕습니다.',
+        instructionName: '지시 세트 이름',
+        instructionRegexFormat: '정규식 형식',
+        instructionRegexNote: 'AI가 생성해야 할 형식 패턴을 정의합니다. 특수 문자는 적절히 이스케이프하세요.',
+        instructionTrigger: '트리거 키워드',
+        instructionTriggerNote: '이 지시 세트를 활성화하는 키워드입니다.',
+        instructionRules: '포맷팅 규칙 및 지침',
+        enableInstruction: '이 지시 세트 활성화',
+        saveAiInstruction: 'AI 지시사항 저장',
+        testAiInstruction: '지시사항 테스트',
+        aiInstructionSaved: 'AI 지시사항이 저장되었습니다!'
       },
       en: {
         title: 'Regex Tester with Claude AI',
@@ -885,6 +961,8 @@
         context: 'Context',
         messages: 'messages',
         clearCache: 'Clear Cache',
+        maxTokens: 'Maximum Output Tokens',
+        maxTokensNote: 'Controls the maximum length of the AI response (256-8192 tokens).',
         regexConfig: 'Regex Configuration',
         regexPattern: 'Regular Expression (Input Pattern)',
         regexPlaceholder: 'Enter your regex pattern here...',
@@ -909,6 +987,7 @@
         noLogs: 'No logs yet. Send a message to Claude to see debug output.',
         apiSettings: 'API Settings',
         promptManagement: 'Prompt Management',
+        aiInstructions: 'AI Instructions',
         systemPrompt: 'System Prompt',
         claudeApiKey: 'Claude API Key',
         apiKeyNote: 'Your API key is stored locally in your browser.',
@@ -938,7 +1017,18 @@
         noMatch: 'No match found for the sample text.',
         invalidRegex: 'Invalid regex:',
         enterRegexCode: 'Enter regex and code to see preview...',
-        apiKeyRequired: 'API Key not configured. Please set it in Settings.'
+        apiKeyRequired: 'API Key not configured. Please set it in Settings.',
+        aiInstructionsDescription: 'Create custom AI instruction sets for generating formatted data blocks. These instructions help AI produce structured outputs based on specific patterns and rules.',
+        instructionName: 'Instruction Set Name',
+        instructionRegexFormat: 'Regular Expression Format',
+        instructionRegexNote: 'Define the format pattern your AI should generate. Use proper escaping for special characters.',
+        instructionTrigger: 'Trigger Keyword',
+        instructionTriggerNote: 'The keyword that activates this instruction set.',
+        instructionRules: 'Formatting Rules & Guidelines',
+        enableInstruction: 'Enable this instruction set',
+        saveAiInstruction: 'Save AI Instruction',
+        testAiInstruction: 'Test Instruction',
+        aiInstructionSaved: 'AI instruction saved!'
       }
     };
 
@@ -989,14 +1079,45 @@ Your primary task is to generate a complete package for a display UI based on th
 </div>
 [/CODE]
 
+**IMPORTANT REGEX FORMATTING GUIDELINES:**
+1. Escaping Special Characters: Always properly escape regex special characters:
+   - Use \\\\ for backslashes
+   - Use \\[ and \\] for square brackets
+   - Use \\( and \\) for parentheses
+   - Use \\| for pipe symbols
+   - Use \\. for literal dots
+2. Testing: Ensure your regex pattern is valid and matches the sample text before responding.
+3. Grouping: Use capturing groups () to extract specific parts of the text for use with $1, $2, etc.
+4. Validation: Double-check that your regex pattern will not cause parsing errors.
+
 Now, fulfill the user's request following these rules precisely. English only.`;
 
     // State management
     let state = {
       apiKey: '',
-      model: 'claude-sonnet-4-5-20250514',
+      model: 'claude-sonnet-4-5-20250929',
+      maxTokens: 4096,
       systemPrompt: DEFAULT_SYSTEM_PROMPT,
       customPrompts: [],
+      aiInstruction: {
+        name: 'Status Window Generator',
+        regexFormat: '[SystemName:key1=value1|key2=value2|key3=value3]',
+        trigger: '/상태창',
+        rules: `CRITICAL RULE: The placement of the formatted output block is determined by the user's explicit request. If the user has not specified a particular location (e.g., at the beginning, middle, or end of the response), the AI should use its judgment, considering the context and natural flow of the conversation, to determine the most appropriate placement. This is the most important instruction.
+
+Detailed Rules:
+1. Format Adherence: The output must strictly follow the regular expression format provided.
+2. Placement: The formatted output block should only be generated when explicitly requested by the user. By default, place it at the most natural position in the response, but if the user specifies a particular location, that instruction must be followed.
+3. Content: All content must be written in Korean and should contain objective, factual information.
+4. Empty Fields: Items with no information or that are not applicable should be marked as '없음' (None) or '해당 없음' (Not Applicable).
+5. Escaping: Be careful with special characters in regex patterns. Properly escape brackets [], parentheses (), pipes |, and backslashes \\\\.
+6. Validation: Ensure all required fields are present before generating the output.
+
+Examples:
+Good: [StatusWindow:시간=2024-12-10 14:30|위치=카페|캐릭터=김민지]
+Bad: [StatusWindow:시간=2024-12-10 14:30|위치=카페] (Missing required character field)`,
+        enabled: true
+      },
       conversationHistory: [],
       savedResults: [],
       currentRegex: '',
@@ -1121,9 +1242,19 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       // API settings
       document.getElementById('apiKeyInput').value = state.apiKey;
       document.getElementById('modelSelect').value = state.model;
+      document.getElementById('maxTokensInput').value = state.maxTokens;
 
       // System prompt
       document.getElementById('systemPromptInput').value = state.systemPrompt;
+
+      // AI Instructions
+      if (state.aiInstruction) {
+        document.getElementById('aiInstructionName').value = state.aiInstruction.name || '';
+        document.getElementById('aiInstructionRegex').value = state.aiInstruction.regexFormat || '';
+        document.getElementById('aiInstructionTrigger').value = state.aiInstruction.trigger || '';
+        document.getElementById('aiInstructionRules').value = state.aiInstruction.rules || '';
+        document.getElementById('aiInstructionEnabled').checked = state.aiInstruction.enabled || false;
+      }
 
       // Current values
       document.getElementById('regexInput').value = state.currentRegex;
@@ -1249,8 +1380,11 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       }
     }
 
-    // Build full system prompt with custom prompts
+    // Build full system prompt with custom prompts and AI instructions
     function buildFullSystemPrompt() {
+      let fullPrompt = '';
+
+      // Add custom prompts (sorted by priority)
       const enabledPrompts = state.customPrompts
         .filter(p => p.enabled)
         .sort((a, b) => b.priority - a.priority)
@@ -1258,9 +1392,22 @@ Now, fulfill the user's request following these rules precisely. English only.`;
         .join('\n\n');
 
       if (enabledPrompts) {
-        return enabledPrompts + '\n\n' + state.systemPrompt;
+        fullPrompt += enabledPrompts + '\n\n';
       }
-      return state.systemPrompt;
+
+      // Add AI instructions if enabled
+      if (state.aiInstruction && state.aiInstruction.enabled && state.aiInstruction.rules) {
+        fullPrompt += `**AI INSTRUCTION SET: ${state.aiInstruction.name}**\n\n`;
+        fullPrompt += `Trigger Keyword: ${state.aiInstruction.trigger}\n`;
+        fullPrompt += `Expected Format: ${state.aiInstruction.regexFormat}\n\n`;
+        fullPrompt += `${state.aiInstruction.rules}\n\n`;
+        fullPrompt += '---\n\n';
+      }
+
+      // Add base system prompt
+      fullPrompt += state.systemPrompt;
+
+      return fullPrompt;
     }
 
     // Call Claude API
@@ -1283,7 +1430,7 @@ Now, fulfill the user's request following these rules precisely. English only.`;
 
       const requestBody = {
         model: state.model,
-        max_tokens: 4096,
+        max_tokens: state.maxTokens || 4096,
         system: fullSystemPrompt,
         messages: state.conversationHistory
       };
@@ -1453,6 +1600,7 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       document.getElementById('saveApiBtn').addEventListener('click', () => {
         state.apiKey = document.getElementById('apiKeyInput').value;
         state.model = document.getElementById('modelSelect').value;
+        state.maxTokens = parseInt(document.getElementById('maxTokensInput').value) || 4096;
         saveState();
         updateUI();
         showMessage(t('apiSettingsSaved'), 'success');
@@ -1478,6 +1626,29 @@ Now, fulfill the user's request following these rules precisely. English only.`;
 
       // Add prompt
       document.getElementById('addPromptBtn').addEventListener('click', addPrompt);
+
+      // Save AI Instructions
+      document.getElementById('saveAiInstructionBtn').addEventListener('click', () => {
+        state.aiInstruction = {
+          name: document.getElementById('aiInstructionName').value,
+          regexFormat: document.getElementById('aiInstructionRegex').value,
+          trigger: document.getElementById('aiInstructionTrigger').value,
+          rules: document.getElementById('aiInstructionRules').value,
+          enabled: document.getElementById('aiInstructionEnabled').checked
+        };
+        saveState();
+        showMessage(t('aiInstructionSaved'), 'success');
+        addLog('info', state.language === 'ko' ? 'AI 지시사항이 저장되었습니다' : 'AI instruction saved');
+      });
+
+      // Test AI Instructions
+      document.getElementById('testAiInstructionBtn').addEventListener('click', () => {
+        const trigger = document.getElementById('aiInstructionTrigger').value;
+        const testMessage = state.language === 'ko'
+          ? `${trigger} 키워드를 사용하여 테스트 데이터를 생성해주세요.`
+          : `Please generate test data using the ${trigger} keyword.`;
+        document.getElementById('chatInput').value = testMessage;
+      });
 
       // Clear cache
       document.getElementById('clearCacheBtn').addEventListener('click', () => {
