@@ -37,7 +37,6 @@
       margin: 0 auto;
     }
 
-    /* Language Toggle */
     .lang-toggle-bar {
       display: flex;
       justify-content: flex-end;
@@ -132,6 +131,15 @@
       background: #ef4444;
     }
 
+    .btn-success {
+      background: #059669;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #10b981;
+    }
+
     .main-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -174,7 +182,7 @@
       font-size: 14px;
     }
 
-    textarea, input[type="text"], input[type="password"] {
+    textarea, input[type="text"], input[type="password"], input[type="number"] {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--border);
@@ -189,6 +197,16 @@
     textarea:focus, input:focus {
       outline: none;
       border-color: var(--accent);
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
     }
 
     .regex-input {
@@ -217,7 +235,6 @@
       padding: 40px;
     }
 
-    /* Chat input area */
     .chat-area {
       margin-top: 20px;
     }
@@ -237,7 +254,6 @@
       padding: 12px 24px;
     }
 
-    /* Modal styles */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -259,7 +275,7 @@
       background: var(--bg-secondary);
       border-radius: 12px;
       padding: 24px;
-      max-width: 800px;
+      max-width: 900px;
       width: 90%;
       max-height: 90vh;
       overflow-y: auto;
@@ -295,6 +311,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -304,6 +321,7 @@
       color: var(--text-secondary);
       border-radius: 8px;
       cursor: pointer;
+      font-size: 13px;
     }
 
     .tab-btn.active {
@@ -319,7 +337,6 @@
       display: block;
     }
 
-    /* Prompt management */
     .prompt-list {
       margin-bottom: 15px;
     }
@@ -337,15 +354,18 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .prompt-item-title {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .prompt-item-title input {
+    .prompt-item-title input[type="text"] {
       width: 200px;
     }
 
@@ -408,7 +428,6 @@
       transform: translateX(24px);
     }
 
-    /* Status indicator */
     .status-bar {
       display: flex;
       align-items: center;
@@ -432,11 +451,6 @@
       background: var(--success);
     }
 
-    .status-dot.error {
-      background: var(--accent);
-    }
-
-    /* History panel */
     .history-item {
       background: var(--bg-primary);
       border: 1px solid var(--border);
@@ -462,7 +476,6 @@
       color: var(--text-secondary);
     }
 
-    /* Loading spinner */
     .loading {
       display: inline-block;
       width: 20px;
@@ -481,7 +494,6 @@
       display: none !important;
     }
 
-    /* Message display */
     .message {
       padding: 10px 15px;
       border-radius: 8px;
@@ -499,12 +511,10 @@
       border: 1px solid var(--success);
     }
 
-    /* Rendered output styling */
     .rendered-output {
       padding: 20px;
     }
 
-    /* Debug Log Panel */
     .debug-panel {
       margin-top: 20px;
       background: var(--bg-secondary);
@@ -587,30 +597,11 @@
       flex-shrink: 0;
     }
 
-    .log-type.input {
-      background: #2563eb;
-      color: white;
-    }
-
-    .log-type.output {
-      background: #059669;
-      color: white;
-    }
-
-    .log-type.cache {
-      background: #d97706;
-      color: white;
-    }
-
-    .log-type.error {
-      background: var(--accent);
-      color: white;
-    }
-
-    .log-type.info {
-      background: #6366f1;
-      color: white;
-    }
+    .log-type.input { background: #2563eb; color: white; }
+    .log-type.output { background: #059669; color: white; }
+    .log-type.cache { background: #d97706; color: white; }
+    .log-type.error { background: var(--accent); color: white; }
+    .log-type.info { background: #6366f1; color: white; }
 
     .log-message {
       color: var(--text-primary);
@@ -626,11 +617,51 @@
       max-height: 100px;
       overflow-y: auto;
     }
+
+    .directive-panel {
+      margin-top: 15px;
+      padding: 15px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .directive-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .directive-header h4 {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .row .input-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .small-input {
+      width: 100px !important;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Language Toggle -->
     <div class="lang-toggle-bar">
       <span data-i18n="language">Language:</span>
       <button class="lang-btn" id="langKo" data-lang="ko">한국어</button>
@@ -640,6 +671,7 @@
     <header>
       <h1>🔧 <span data-i18n="title">Regex Tester with Claude AI</span></h1>
       <div class="header-buttons">
+        <button class="btn btn-secondary" id="directiveBtn">📋 <span data-i18n="directive">Directive</span></button>
         <button class="btn btn-secondary" id="historyBtn">📜 <span data-i18n="history">History</span></button>
         <button class="btn btn-secondary" id="settingsBtn">⚙️ <span data-i18n="settings">Settings</span></button>
       </div>
@@ -651,11 +683,10 @@
       <span style="margin-left: auto; color: var(--text-secondary);">
         <span data-i18n="context">Context</span>: <span id="contextCount">0</span> <span data-i18n="messages">messages</span>
       </span>
-      <button class="btn btn-danger btn-sm" id="clearCacheBtn" style="padding: 4px 12px; font-size: 12px;" data-i18n="clearCache">Clear Cache</button>
+      <button class="btn btn-danger" id="clearCacheBtn" style="padding: 4px 12px; font-size: 12px;" data-i18n="clearCache">Clear Cache</button>
     </div>
 
     <div class="main-layout">
-      <!-- Left Panel: Input -->
       <div class="panel">
         <div class="panel-header">
           <h2 class="panel-title">📝 <span data-i18n="regexConfig">Regex Configuration</span></h2>
@@ -678,7 +709,6 @@
 
         <button class="btn btn-primary" id="renderBtn" style="width: 100%;">🔄 <span data-i18n="renderPreview">Render Preview</span></button>
 
-        <!-- Chat with Claude -->
         <div class="chat-area">
           <div class="input-group">
             <label>💬 <span data-i18n="askClaude">Ask Claude AI to generate regex & template</span></label>
@@ -694,7 +724,6 @@
         </div>
       </div>
 
-      <!-- Right Panel: Preview -->
       <div class="panel">
         <div class="panel-header">
           <h2 class="panel-title">👁️ <span data-i18n="livePreview">Live Preview</span></h2>
@@ -702,9 +731,7 @@
         </div>
 
         <div class="preview-area" id="previewArea">
-          <div class="preview-placeholder" data-i18n="previewPlaceholder">
-            Preview will appear here after rendering...
-          </div>
+          <div class="preview-placeholder" data-i18n="previewPlaceholder">Preview will appear here after rendering...</div>
         </div>
 
         <div class="input-group" style="margin-top: 15px;">
@@ -715,7 +742,6 @@
       </div>
     </div>
 
-    <!-- Debug Log Panel -->
     <div class="debug-panel" id="debugPanel">
       <div class="debug-header" id="debugHeader">
         <h3>
@@ -733,7 +759,7 @@
         </div>
         <div class="debug-log" id="debugLog">
           <div class="log-entry" style="color: var(--text-secondary); text-align: center; padding: 20px;">
-            <span data-i18n="noLogs">No logs yet. Send a message to Claude to see debug output.</span>
+            <span data-i18n="noLogs">No logs yet.</span>
           </div>
         </div>
       </div>
@@ -754,35 +780,44 @@
         <button class="tab-btn" data-tab="system" data-i18n="systemPrompt">System Prompt</button>
       </div>
 
-      <!-- API Settings Tab -->
       <div class="tab-content active" id="tab-api">
         <div class="input-group">
           <label data-i18n="claudeApiKey">Claude API Key</label>
           <input type="password" id="apiKeyInput" placeholder="sk-ant-api...">
-          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;" data-i18n="apiKeyNote">Your API key is stored locally in your browser.</p>
+          <p class="info-text" data-i18n="apiKeyNote">Your API key is stored locally in your browser.</p>
         </div>
         <div class="input-group">
           <label data-i18n="model">Model</label>
-          <select id="modelSelect" style="width: 100%; padding: 12px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px;">
-            <option value="claude-sonnet-4-5-20250514">Claude Sonnet 4.5</option>
-            <option value="claude-opus-4-5-20251101">Claude Opus 4.5</option>
+          <select id="modelSelect">
+            <option value="claude-sonnet-4-5-20250929">Claude Sonnet 4.5 (Recommended)</option>
+            <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+            <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fast)</option>
+            <option value="claude-opus-4-5-20251101">Claude Opus 4.5 (Most Capable)</option>
           </select>
+        </div>
+        <div class="row">
+          <div class="input-group">
+            <label data-i18n="maxOutputTokens">Max Output Tokens</label>
+            <input type="number" id="maxTokensInput" value="4096" min="100" max="32000">
+            <p class="info-text" data-i18n="maxTokensNote">Maximum tokens in response (100-32000)</p>
+          </div>
+          <div class="input-group">
+            <label data-i18n="maxContextMessages">Max Context Messages</label>
+            <input type="number" id="maxContextInput" value="20" min="2" max="100">
+            <p class="info-text" data-i18n="maxContextNote">Older messages will be removed (2-100)</p>
+          </div>
         </div>
         <button class="btn btn-primary" id="saveApiBtn" data-i18n="saveApiSettings">Save API Settings</button>
       </div>
 
-      <!-- Prompt Management Tab -->
       <div class="tab-content" id="tab-prompts">
         <p style="color: var(--text-secondary); margin-bottom: 15px;" data-i18n="promptDescription">
           Add custom prompts that will be prepended to the system prompt. Higher priority prompts are applied first.
         </p>
-
         <div class="prompt-list" id="promptList"></div>
-
         <button class="btn btn-secondary" id="addPromptBtn">+ <span data-i18n="addNewPrompt">Add New Prompt</span></button>
       </div>
 
-      <!-- System Prompt Tab -->
       <div class="tab-content" id="tab-system">
         <div class="input-group">
           <label data-i18n="baseSystemPrompt">Base System Prompt (editable)</label>
@@ -790,6 +825,43 @@
         </div>
         <button class="btn btn-primary" id="saveSystemPromptBtn" data-i18n="saveSystemPrompt">Save System Prompt</button>
         <button class="btn btn-secondary" id="resetSystemPromptBtn" style="margin-left: 10px;" data-i18n="resetToDefault">Reset to Default</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Directive Modal -->
+  <div class="modal-overlay" id="directiveModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">📋 <span data-i18n="aiDirective">AI Output Directive</span></h2>
+        <button class="close-btn" id="closeDirectiveBtn">&times;</button>
+      </div>
+
+      <p style="color: var(--text-secondary); margin-bottom: 15px;" data-i18n="directiveDescription">
+        Create output rules for the generated regex. This directive will be appended to your request when generating.
+      </p>
+
+      <div class="input-group">
+        <label data-i18n="directiveName">Directive Name</label>
+        <input type="text" id="directiveNameInput" placeholder="e.g., StatusWindow">
+      </div>
+
+      <div class="input-group">
+        <label data-i18n="directiveContent">Directive Content</label>
+        <textarea id="directiveContentInput" class="code-input" style="min-height: 300px;" data-i18n-placeholder="directivePlaceholder"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label class="toggle-switch" style="display: inline-flex; align-items: center; gap: 10px;">
+          <input type="checkbox" id="directiveEnabledInput">
+          <span class="toggle-slider"></span>
+          <span data-i18n="enableDirective" style="color: var(--text-secondary);">Enable Directive</span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="saveDirectiveBtn" data-i18n="saveDirective">Save Directive</button>
+        <button class="btn btn-secondary" id="loadDefaultDirectiveBtn" data-i18n="loadDefaultDirective">Load Example</button>
       </div>
     </div>
   </div>
@@ -808,13 +880,13 @@
   </div>
 
   <script>
-    // Internationalization
     const i18n = {
       ko: {
         title: 'Claude AI 정규식 테스터',
         language: '언어:',
         history: '기록',
         settings: '설정',
+        directive: '지침',
         apiNotConfigured: 'API 키가 설정되지 않음',
         apiConfigured: 'API 키 설정됨',
         context: '컨텍스트',
@@ -829,7 +901,7 @@
         codePlaceholder: '$1, $2 플레이스홀더를 사용한 HTML/CSS 코드를 입력하세요...',
         renderPreview: '프리뷰 렌더링',
         askClaude: 'Claude AI에게 정규식 & 템플릿 생성 요청',
-        chatPlaceholder: '예: 유튜브 채팅창 스타일의 세련된 시계 상태창을 만들어줘. 시간은 [Time: HH:mm:ss] 형태로 표시될거야.',
+        chatPlaceholder: '예: 유튜브 채팅창 스타일의 세련된 시계 상태창을 만들어줘.',
         send: '전송',
         livePreview: '실시간 프리뷰',
         saveResult: '결과 저장',
@@ -841,15 +913,19 @@
         entries: '항목',
         clearLog: '로그 지우기',
         exportLog: '로그 내보내기',
-        noLogs: '아직 로그가 없습니다. Claude에 메시지를 보내면 디버그 출력을 볼 수 있습니다.',
+        noLogs: '아직 로그가 없습니다.',
         apiSettings: 'API 설정',
         promptManagement: '프롬프트 관리',
         systemPrompt: '시스템 프롬프트',
         claudeApiKey: 'Claude API 키',
         apiKeyNote: 'API 키는 브라우저에 로컬로 저장됩니다.',
         model: '모델',
+        maxOutputTokens: '최대 출력 토큰',
+        maxTokensNote: '응답의 최대 토큰 수 (100-32000)',
+        maxContextMessages: '최대 컨텍스트 메시지',
+        maxContextNote: '오래된 메시지는 자동 삭제됩니다 (2-100)',
         saveApiSettings: 'API 설정 저장',
-        promptDescription: '시스템 프롬프트 앞에 추가될 커스텀 프롬프트를 추가하세요. 높은 우선순위의 프롬프트가 먼저 적용됩니다.',
+        promptDescription: '시스템 프롬프트 앞에 추가될 커스텀 프롬프트를 추가하세요.',
         addNewPrompt: '새 프롬프트 추가',
         baseSystemPrompt: '기본 시스템 프롬프트 (편집 가능)',
         saveSystemPrompt: '시스템 프롬프트 저장',
@@ -869,17 +945,27 @@
         systemPromptReset: '시스템 프롬프트가 기본값으로 리셋되었습니다!',
         cacheClearedMsg: '대화 캐시가 초기화되었습니다!',
         regexGenerated: '정규식 템플릿이 성공적으로 생성되었습니다!',
-        parseError: '응답을 파싱할 수 없습니다. Claude가 예상치 못한 형식으로 응답했을 수 있습니다.',
+        parseError: '응답을 파싱할 수 없습니다.',
         noMatch: '샘플 텍스트와 매칭되는 항목이 없습니다.',
         invalidRegex: '잘못된 정규식:',
         enterRegexCode: '정규식과 코드를 입력하여 프리뷰를 확인하세요...',
-        apiKeyRequired: 'API 키가 설정되지 않았습니다. 설정에서 API 키를 입력하세요.'
+        apiKeyRequired: 'API 키가 설정되지 않았습니다.',
+        aiDirective: 'AI 출력 지침',
+        directiveDescription: '생성되는 정규식에 대한 출력 규칙을 생성합니다. 이 지침은 생성 요청 시 추가됩니다.',
+        directiveName: '지침 이름',
+        directiveContent: '지침 내용',
+        directivePlaceholder: 'AI가 따라야 할 출력 규칙을 입력하세요...',
+        enableDirective: '지침 활성화',
+        saveDirective: '지침 저장',
+        loadDefaultDirective: '예시 불러오기',
+        directiveSaved: '지침이 저장되었습니다!'
       },
       en: {
         title: 'Regex Tester with Claude AI',
         language: 'Language:',
         history: 'History',
         settings: 'Settings',
+        directive: 'Directive',
         apiNotConfigured: 'API Key not configured',
         apiConfigured: 'API Key configured',
         context: 'Context',
@@ -894,7 +980,7 @@
         codePlaceholder: 'Enter your HTML/CSS code with $1, $2 placeholders...',
         renderPreview: 'Render Preview',
         askClaude: 'Ask Claude AI to generate regex & template',
-        chatPlaceholder: 'Example: Create a stylish YouTube-style clock status display. Time will be shown as [Time: HH:mm:ss].',
+        chatPlaceholder: 'Example: Create a stylish YouTube-style clock display.',
         send: 'Send',
         livePreview: 'Live Preview',
         saveResult: 'Save Result',
@@ -906,15 +992,19 @@
         entries: 'entries',
         clearLog: 'Clear Log',
         exportLog: 'Export Log',
-        noLogs: 'No logs yet. Send a message to Claude to see debug output.',
+        noLogs: 'No logs yet.',
         apiSettings: 'API Settings',
         promptManagement: 'Prompt Management',
         systemPrompt: 'System Prompt',
         claudeApiKey: 'Claude API Key',
         apiKeyNote: 'Your API key is stored locally in your browser.',
         model: 'Model',
+        maxOutputTokens: 'Max Output Tokens',
+        maxTokensNote: 'Maximum tokens in response (100-32000)',
+        maxContextMessages: 'Max Context Messages',
+        maxContextNote: 'Older messages will be removed (2-100)',
         saveApiSettings: 'Save API Settings',
-        promptDescription: 'Add custom prompts that will be prepended to the system prompt. Higher priority prompts are applied first.',
+        promptDescription: 'Add custom prompts that will be prepended to the system prompt.',
         addNewPrompt: 'Add New Prompt',
         baseSystemPrompt: 'Base System Prompt (editable)',
         saveSystemPrompt: 'Save System Prompt',
@@ -934,23 +1024,37 @@
         systemPromptReset: 'System prompt reset to default!',
         cacheClearedMsg: 'Conversation cache cleared!',
         regexGenerated: 'Regex template generated successfully!',
-        parseError: 'Could not parse response. Claude might have returned an unexpected format.',
+        parseError: 'Could not parse response.',
         noMatch: 'No match found for the sample text.',
         invalidRegex: 'Invalid regex:',
         enterRegexCode: 'Enter regex and code to see preview...',
-        apiKeyRequired: 'API Key not configured. Please set it in Settings.'
+        apiKeyRequired: 'API Key not configured.',
+        aiDirective: 'AI Output Directive',
+        directiveDescription: 'Create output rules for the generated regex. This directive will be appended to your request when generating.',
+        directiveName: 'Directive Name',
+        directiveContent: 'Directive Content',
+        directivePlaceholder: 'Enter output rules for AI to follow...',
+        enableDirective: 'Enable Directive',
+        saveDirective: 'Save Directive',
+        loadDefaultDirective: 'Load Example',
+        directiveSaved: 'Directive saved!'
       }
     };
 
-    // Default system prompt
-    const DEFAULT_SYSTEM_PROMPT = `You are an expert front-end developer specializing in creating compact, stylish, and efficient HTML and CSS components for a chat application.
+    const DEFAULT_SYSTEM_PROMPT = `You are an expert front-end developer specializing in creating compact, stylish, and efficient HTML and CSS components.
 
-Your primary task is to generate a complete package for a display UI based on the user's request. This package includes a regular expression, a sample text that matches it, and the HTML/CSS code.
+Your primary task is to generate a complete package for a display UI. This package includes a regular expression, a sample text that matches it, and the HTML/CSS code.
 
-**You must output your response in the following exact format, with no explanations or extra text outside of the specified blocks:**
+**CRITICAL FORMATTING RULES:**
+1. Always escape special regex characters properly (use \\\\ for backslash in regex)
+2. Do NOT include any explanations outside the specified blocks
+3. Ensure all brackets, braces, and tags are properly closed
+4. Test your regex mentally before outputting
+
+**You must output your response in the following exact format:**
 
 [REGEXP]
-(Your generated regular expression here)
+(Your generated regular expression here - properly escaped)
 [/REGEXP]
 [SAMPLE]
 (A sample text string that your regex can parse)
@@ -963,38 +1067,53 @@ Your primary task is to generate a complete package for a display UI based on th
 [/CODE]
 
 **Example Request:**
-"유튜브 채팅창 스타일의 세련된 시계 상태창을 만들어줘. 시간은 [Time: HH:mm:ss] 형태로 표시될거야."
+"Create a clock display with [Time: HH:mm:ss] format"
 
-**Example of Your Correct Output:**
+**Example of Correct Output:**
 [REGEXP]
-\\[Time:([^|]*?)\\]
+\\[Time:\\s*([^\\]]+)\\]
 [/REGEXP]
 [SAMPLE]
 [Time: 10:30:55]
 [/SAMPLE]
 [CODE]
 <style>
-  .youtube-style-clock {
+  .clock-display {
     display: inline-block;
     background-color: #282828;
-    color: #aaa;
+    color: #fff;
     border-radius: 6px;
     padding: 5px 10px;
-    font-family: "YouTube Noto", Roboto, Arial, sans-serif;
-    font-size: 12px;
+    font-family: monospace;
   }
 </style>
-<div class="youtube-style-clock">
-  <span>⏰ $1</span>
-</div>
+<div class="clock-display">⏰ $1</div>
 [/CODE]
 
-Now, fulfill the user's request following these rules precisely. English only.`;
+Now, fulfill the user's request following these rules precisely.`;
 
-    // State management
+    const DEFAULT_DIRECTIVE = `AI Instructions for Output Format
+
+CRITICAL RULE: Generate formatted data blocks following this exact structure.
+
+Format Requirements:
+- Pattern: [SystemName:key1=value1|key2=value2|key3=value3]
+- All fields must be included, use "없음" (None) for empty values
+- Content should be in Korean when appropriate
+
+Example Output:
+[StatusWindow:시간=2024-12-10 14:30|위치=카페|캐릭터=김민지]
+
+Rules:
+1. Never omit required fields
+2. Maintain consistent formatting
+3. Escape special characters properly`;
+
     let state = {
       apiKey: '',
-      model: 'claude-sonnet-4-5-20250514',
+      model: 'claude-sonnet-4-5-20250929',
+      maxTokens: 4096,
+      maxContext: 20,
       systemPrompt: DEFAULT_SYSTEM_PROMPT,
       customPrompts: [],
       conversationHistory: [],
@@ -1003,43 +1122,29 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       currentSample: '',
       currentCode: '',
       language: 'ko',
-      debugLogs: []
+      debugLogs: [],
+      directive: {
+        name: '',
+        content: '',
+        enabled: false
+      }
     };
 
-    // Debug logging
     function addLog(type, message, data = null) {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
-
-      const logEntry = {
-        time: timeStr,
-        type,
-        message,
-        data,
-        timestamp: now.getTime()
-      };
-
-      state.debugLogs.push(logEntry);
-
-      // Keep only last 100 logs
-      if (state.debugLogs.length > 100) {
-        state.debugLogs = state.debugLogs.slice(-100);
-      }
-
+      state.debugLogs.push({ time: timeStr, type, message, data, timestamp: now.getTime() });
+      if (state.debugLogs.length > 100) state.debugLogs = state.debugLogs.slice(-100);
       renderDebugLog();
-      saveState();
     }
 
     function renderDebugLog() {
       const container = document.getElementById('debugLog');
       const countEl = document.getElementById('logCount');
-
       countEl.textContent = state.debugLogs.length;
 
       if (state.debugLogs.length === 0) {
-        container.innerHTML = `<div class="log-entry" style="color: var(--text-secondary); text-align: center; padding: 20px;">
-          <span data-i18n="noLogs">${t('noLogs')}</span>
-        </div>`;
+        container.innerHTML = `<div class="log-entry" style="color: var(--text-secondary); text-align: center; padding: 20px;">${t('noLogs')}</div>`;
         return;
       }
 
@@ -1047,42 +1152,29 @@ Now, fulfill the user's request following these rules precisely. English only.`;
         <div class="log-entry">
           <span class="log-time">${log.time}</span>
           <span class="log-type ${log.type}">${log.type.toUpperCase()}</span>
-          <span class="log-message">
-            ${log.message}
-            ${log.data ? `<pre>${typeof log.data === 'string' ? log.data : JSON.stringify(log.data, null, 2)}</pre>` : ''}
-          </span>
+          <span class="log-message">${log.message}${log.data ? `<pre>${typeof log.data === 'string' ? log.data : JSON.stringify(log.data, null, 2)}</pre>` : ''}</span>
         </div>
       `).join('');
-
       container.scrollTop = container.scrollHeight;
     }
 
-    // Translation function
     function t(key) {
       return i18n[state.language][key] || i18n['en'][key] || key;
     }
 
     function updateLanguage() {
       document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        el.textContent = t(key);
+        el.textContent = t(el.getAttribute('data-i18n'));
       });
-
       document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        el.placeholder = t(key);
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
       });
-
-      // Update language buttons
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === state.language);
       });
-
-      // Update dynamic content
       updateUI();
     }
 
-    // Load state from localStorage
     function loadState() {
       const saved = localStorage.getItem('regexTesterState');
       if (saved) {
@@ -1097,14 +1189,11 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       updateUI();
     }
 
-    // Save state to localStorage
     function saveState() {
       localStorage.setItem('regexTesterState', JSON.stringify(state));
     }
 
-    // Update UI based on state
     function updateUI() {
-      // API status
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('statusText');
       if (state.apiKey) {
@@ -1115,32 +1204,24 @@ Now, fulfill the user's request following these rules precisely. English only.`;
         statusText.textContent = t('apiNotConfigured');
       }
 
-      // Context count
       document.getElementById('contextCount').textContent = state.conversationHistory.length;
-
-      // API settings
       document.getElementById('apiKeyInput').value = state.apiKey;
       document.getElementById('modelSelect').value = state.model;
-
-      // System prompt
+      document.getElementById('maxTokensInput').value = state.maxTokens;
+      document.getElementById('maxContextInput').value = state.maxContext;
       document.getElementById('systemPromptInput').value = state.systemPrompt;
-
-      // Current values
       document.getElementById('regexInput').value = state.currentRegex;
       document.getElementById('sampleInput').value = state.currentSample;
       document.getElementById('codeInput').value = state.currentCode;
+      document.getElementById('directiveNameInput').value = state.directive.name;
+      document.getElementById('directiveContentInput').value = state.directive.content;
+      document.getElementById('directiveEnabledInput').checked = state.directive.enabled;
 
-      // Render custom prompts
       renderPromptList();
-
-      // Render history
       renderHistoryList();
-
-      // Render debug log
       renderDebugLog();
     }
 
-    // Render prompt list
     function renderPromptList() {
       const container = document.getElementById('promptList');
       if (state.customPrompts.length === 0) {
@@ -1148,32 +1229,29 @@ Now, fulfill the user's request following these rules precisely. English only.`;
         return;
       }
 
-      container.innerHTML = state.customPrompts
-        .sort((a, b) => b.priority - a.priority)
-        .map((prompt, index) => `
-          <div class="prompt-item" data-id="${prompt.id}">
-            <div class="prompt-item-header">
-              <div class="prompt-item-title">
-                <input type="text" value="${prompt.name}" placeholder="${t('promptName')}" onchange="updatePromptName('${prompt.id}', this.value)">
-                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-secondary);">
-                  ${t('priority')}:
-                  <input type="number" class="priority-input" value="${prompt.priority}" onchange="updatePromptPriority('${prompt.id}', this.value)">
-                </label>
-              </div>
-              <div class="prompt-item-actions">
-                <label class="toggle-switch">
-                  <input type="checkbox" ${prompt.enabled ? 'checked' : ''} onchange="togglePrompt('${prompt.id}')">
-                  <span class="toggle-slider"></span>
-                </label>
-                <button class="btn btn-danger" style="padding: 4px 8px;" onclick="deletePrompt('${prompt.id}')">🗑️</button>
-              </div>
+      container.innerHTML = state.customPrompts.sort((a, b) => b.priority - a.priority).map(prompt => `
+        <div class="prompt-item" data-id="${prompt.id}">
+          <div class="prompt-item-header">
+            <div class="prompt-item-title">
+              <input type="text" value="${prompt.name}" placeholder="${t('promptName')}" onchange="updatePromptName('${prompt.id}', this.value)">
+              <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-secondary);">
+                ${t('priority')}:
+                <input type="number" class="priority-input" value="${prompt.priority}" onchange="updatePromptPriority('${prompt.id}', this.value)">
+              </label>
             </div>
-            <textarea class="prompt-textarea" placeholder="${t('enterPrompt')}" onchange="updatePromptContent('${prompt.id}', this.value)">${prompt.content}</textarea>
+            <div class="prompt-item-actions">
+              <label class="toggle-switch">
+                <input type="checkbox" ${prompt.enabled ? 'checked' : ''} onchange="togglePrompt('${prompt.id}')">
+                <span class="toggle-slider"></span>
+              </label>
+              <button class="btn btn-danger" style="padding: 4px 8px;" onclick="deletePrompt('${prompt.id}')">🗑️</button>
+            </div>
           </div>
-        `).join('');
+          <textarea class="prompt-textarea" placeholder="${t('enterPrompt')}" onchange="updatePromptContent('${prompt.id}', this.value)">${prompt.content}</textarea>
+        </div>
+      `).join('');
     }
 
-    // Render history list
     function renderHistoryList() {
       const container = document.getElementById('historyList');
       if (state.savedResults.length === 0) {
@@ -1191,53 +1269,31 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       `).join('');
     }
 
-    // Prompt management functions
     function addPrompt() {
-      const newPrompt = {
-        id: Date.now().toString(),
-        name: t('newPrompt'),
-        content: '',
-        priority: 0,
-        enabled: true
-      };
-      state.customPrompts.push(newPrompt);
+      state.customPrompts.push({ id: Date.now().toString(), name: t('newPrompt'), content: '', priority: 0, enabled: true });
       saveState();
       renderPromptList();
-      addLog('info', state.language === 'ko' ? '새 프롬프트가 추가되었습니다' : 'New prompt added');
+      addLog('info', state.language === 'ko' ? '새 프롬프트 추가됨' : 'New prompt added');
     }
 
     function updatePromptName(id, name) {
       const prompt = state.customPrompts.find(p => p.id === id);
-      if (prompt) {
-        prompt.name = name;
-        saveState();
-      }
+      if (prompt) { prompt.name = name; saveState(); }
     }
 
     function updatePromptPriority(id, priority) {
       const prompt = state.customPrompts.find(p => p.id === id);
-      if (prompt) {
-        prompt.priority = parseInt(priority) || 0;
-        saveState();
-        renderPromptList();
-      }
+      if (prompt) { prompt.priority = parseInt(priority) || 0; saveState(); renderPromptList(); }
     }
 
     function updatePromptContent(id, content) {
       const prompt = state.customPrompts.find(p => p.id === id);
-      if (prompt) {
-        prompt.content = content;
-        saveState();
-      }
+      if (prompt) { prompt.content = content; saveState(); }
     }
 
     function togglePrompt(id) {
       const prompt = state.customPrompts.find(p => p.id === id);
-      if (prompt) {
-        prompt.enabled = !prompt.enabled;
-        saveState();
-        addLog('info', `${state.language === 'ko' ? '프롬프트' : 'Prompt'} "${prompt.name}" ${prompt.enabled ? (state.language === 'ko' ? '활성화' : 'enabled') : (state.language === 'ko' ? '비활성화' : 'disabled')}`);
-      }
+      if (prompt) { prompt.enabled = !prompt.enabled; saveState(); }
     }
 
     function deletePrompt(id) {
@@ -1245,50 +1301,35 @@ Now, fulfill the user's request following these rules precisely. English only.`;
         state.customPrompts = state.customPrompts.filter(p => p.id !== id);
         saveState();
         renderPromptList();
-        addLog('info', state.language === 'ko' ? '프롬프트가 삭제되었습니다' : 'Prompt deleted');
       }
     }
 
-    // Build full system prompt with custom prompts
     function buildFullSystemPrompt() {
-      const enabledPrompts = state.customPrompts
-        .filter(p => p.enabled)
-        .sort((a, b) => b.priority - a.priority)
-        .map(p => p.content)
-        .join('\n\n');
-
-      if (enabledPrompts) {
-        return enabledPrompts + '\n\n' + state.systemPrompt;
+      let prompt = state.customPrompts.filter(p => p.enabled).sort((a, b) => b.priority - a.priority).map(p => p.content).join('\n\n');
+      if (prompt) prompt += '\n\n';
+      prompt += state.systemPrompt;
+      if (state.directive.enabled && state.directive.content) {
+        prompt += '\n\n--- OUTPUT DIRECTIVE ---\n' + state.directive.content;
       }
-      return state.systemPrompt;
+      return prompt;
     }
 
-    // Call Claude API
     async function callClaudeAPI(userMessage) {
-      if (!state.apiKey) {
-        throw new Error(t('apiKeyRequired'));
-      }
+      if (!state.apiKey) throw new Error(t('apiKeyRequired'));
 
       addLog('input', state.language === 'ko' ? '사용자 메시지' : 'User message', userMessage);
-      addLog('cache', state.language === 'ko' ? `컨텍스트에 메시지 추가 (현재: ${state.conversationHistory.length}개)` : `Adding to context (current: ${state.conversationHistory.length} messages)`);
+      addLog('cache', `Context: ${state.conversationHistory.length} messages`);
 
-      // Add user message to history
-      state.conversationHistory.push({
-        role: 'user',
-        content: userMessage
-      });
+      state.conversationHistory.push({ role: 'user', content: userMessage });
+
+      // Trim context if too long
+      while (state.conversationHistory.length > state.maxContext) {
+        state.conversationHistory.shift();
+        addLog('cache', state.language === 'ko' ? '오래된 메시지 제거됨' : 'Old message removed');
+      }
 
       const fullSystemPrompt = buildFullSystemPrompt();
-      addLog('info', state.language === 'ko' ? `활성 프롬프트: ${state.customPrompts.filter(p => p.enabled).length}개` : `Active prompts: ${state.customPrompts.filter(p => p.enabled).length}`);
-
-      const requestBody = {
-        model: state.model,
-        max_tokens: 4096,
-        system: fullSystemPrompt,
-        messages: state.conversationHistory
-      };
-
-      addLog('info', state.language === 'ko' ? `API 요청 전송 중... (모델: ${state.model})` : `Sending API request... (model: ${state.model})`);
+      addLog('info', `Model: ${state.model}, Max tokens: ${state.maxTokens}`);
 
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -1298,58 +1339,46 @@ Now, fulfill the user's request following these rules precisely. English only.`;
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          model: state.model,
+          max_tokens: state.maxTokens,
+          system: fullSystemPrompt,
+          messages: state.conversationHistory
+        })
       });
 
       if (!response.ok) {
         const error = await response.json();
-        addLog('error', state.language === 'ko' ? 'API 오류' : 'API Error', error.error?.message || 'Unknown error');
+        addLog('error', 'API Error', error.error?.message || 'Unknown error');
         throw new Error(error.error?.message || 'API request failed');
       }
 
       const data = await response.json();
       const assistantMessage = data.content[0].text;
 
-      addLog('output', state.language === 'ko' ? 'Claude 응답' : 'Claude response', assistantMessage.substring(0, 200) + (assistantMessage.length > 200 ? '...' : ''));
-      addLog('cache', state.language === 'ko' ? `컨텍스트 업데이트됨 (총: ${state.conversationHistory.length + 1}개 메시지)` : `Context updated (total: ${state.conversationHistory.length + 1} messages)`);
+      addLog('output', state.language === 'ko' ? 'Claude 응답' : 'Claude response', assistantMessage.substring(0, 300) + (assistantMessage.length > 300 ? '...' : ''));
 
-      // Add assistant response to history
-      state.conversationHistory.push({
-        role: 'assistant',
-        content: assistantMessage
-      });
-
+      state.conversationHistory.push({ role: 'assistant', content: assistantMessage });
       saveState();
       updateUI();
 
       return assistantMessage;
     }
 
-    // Parse Claude response
     function parseClaudeResponse(response) {
       const regexMatch = response.match(/\[REGEXP\]([\s\S]*?)\[\/REGEXP\]/);
       const sampleMatch = response.match(/\[SAMPLE\]([\s\S]*?)\[\/SAMPLE\]/);
       const codeMatch = response.match(/\[CODE\]([\s\S]*?)\[\/CODE\]/);
 
-      const parsed = {
+      return {
         regex: regexMatch ? regexMatch[1].trim() : '',
         sample: sampleMatch ? sampleMatch[1].trim() : '',
         code: codeMatch ? codeMatch[1].trim() : ''
       };
-
-      addLog('info', state.language === 'ko' ? '응답 파싱 완료' : 'Response parsed', {
-        regexFound: !!parsed.regex,
-        sampleFound: !!parsed.sample,
-        codeFound: !!parsed.code
-      });
-
-      return parsed;
     }
 
-    // Render preview
     function renderPreview(regex, sample, code) {
       const previewArea = document.getElementById('previewArea');
-
       if (!regex || !code) {
         previewArea.innerHTML = `<div class="preview-placeholder">${t('enterRegexCode')}</div>`;
         return;
@@ -1361,18 +1390,14 @@ Now, fulfill the user's request following these rules precisely. English only.`;
 
         if (match) {
           let renderedCode = code;
-          // Replace $1, $2, etc. with matched groups
           for (let i = 1; i < match.length; i++) {
             renderedCode = renderedCode.replace(new RegExp('\\$' + i, 'g'), match[i] || '');
           }
-          // Also replace $0 with full match
           renderedCode = renderedCode.replace(/\$0/g, match[0]);
-
           previewArea.innerHTML = '<div class="rendered-output">' + renderedCode + '</div>';
-          addLog('info', state.language === 'ko' ? '프리뷰 렌더링 성공' : 'Preview rendered successfully');
+          addLog('info', state.language === 'ko' ? '프리뷰 렌더링 성공' : 'Preview rendered');
         } else {
           previewArea.innerHTML = `<div class="preview-placeholder" style="color: var(--accent);">${t('noMatch')}</div>`;
-          addLog('error', state.language === 'ko' ? '매칭 실패' : 'No match found');
         }
       } catch (e) {
         previewArea.innerHTML = `<div class="preview-placeholder" style="color: var(--accent);">${t('invalidRegex')} ${e.message}</div>`;
@@ -1380,198 +1405,9 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       }
     }
 
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', () => {
-      loadState();
-
-      // Language toggle
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.language = btn.dataset.lang;
-          saveState();
-          updateLanguage();
-          addLog('info', state.language === 'ko' ? '언어가 한국어로 변경됨' : 'Language changed to English');
-        });
-      });
-
-      // Debug panel toggle
-      document.getElementById('debugHeader').addEventListener('click', () => {
-        document.getElementById('debugPanel').classList.toggle('collapsed');
-      });
-
-      // Clear debug log
-      document.getElementById('clearLogBtn').addEventListener('click', () => {
-        state.debugLogs = [];
-        saveState();
-        renderDebugLog();
-      });
-
-      // Export debug log
-      document.getElementById('exportLogBtn').addEventListener('click', () => {
-        const logText = state.debugLogs.map(log =>
-          `[${log.time}] [${log.type.toUpperCase()}] ${log.message}${log.data ? '\n' + (typeof log.data === 'string' ? log.data : JSON.stringify(log.data, null, 2)) : ''}`
-        ).join('\n\n');
-
-        const blob = new Blob([logText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `debug-log-${new Date().toISOString().slice(0, 10)}.txt`;
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-
-      // Settings modal
-      document.getElementById('settingsBtn').addEventListener('click', () => {
-        document.getElementById('settingsModal').classList.add('active');
-      });
-
-      document.getElementById('closeSettingsBtn').addEventListener('click', () => {
-        document.getElementById('settingsModal').classList.remove('active');
-      });
-
-      // History modal
-      document.getElementById('historyBtn').addEventListener('click', () => {
-        document.getElementById('historyModal').classList.add('active');
-      });
-
-      document.getElementById('closeHistoryBtn').addEventListener('click', () => {
-        document.getElementById('historyModal').classList.remove('active');
-      });
-
-      // Tab switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-        });
-      });
-
-      // Save API settings
-      document.getElementById('saveApiBtn').addEventListener('click', () => {
-        state.apiKey = document.getElementById('apiKeyInput').value;
-        state.model = document.getElementById('modelSelect').value;
-        saveState();
-        updateUI();
-        showMessage(t('apiSettingsSaved'), 'success');
-        addLog('info', state.language === 'ko' ? 'API 설정이 저장되었습니다' : 'API settings saved');
-      });
-
-      // Save system prompt
-      document.getElementById('saveSystemPromptBtn').addEventListener('click', () => {
-        state.systemPrompt = document.getElementById('systemPromptInput').value;
-        saveState();
-        showMessage(t('systemPromptSaved'), 'success');
-        addLog('info', state.language === 'ko' ? '시스템 프롬프트가 저장되었습니다' : 'System prompt saved');
-      });
-
-      // Reset system prompt
-      document.getElementById('resetSystemPromptBtn').addEventListener('click', () => {
-        state.systemPrompt = DEFAULT_SYSTEM_PROMPT;
-        document.getElementById('systemPromptInput').value = DEFAULT_SYSTEM_PROMPT;
-        saveState();
-        showMessage(t('systemPromptReset'), 'success');
-        addLog('info', state.language === 'ko' ? '시스템 프롬프트가 리셋되었습니다' : 'System prompt reset');
-      });
-
-      // Add prompt
-      document.getElementById('addPromptBtn').addEventListener('click', addPrompt);
-
-      // Clear cache
-      document.getElementById('clearCacheBtn').addEventListener('click', () => {
-        const prevCount = state.conversationHistory.length;
-        state.conversationHistory = [];
-        saveState();
-        updateUI();
-        showMessage(t('cacheClearedMsg'), 'success');
-        addLog('cache', state.language === 'ko' ? `캐시가 초기화되었습니다 (${prevCount}개 메시지 삭제)` : `Cache cleared (${prevCount} messages removed)`);
-      });
-
-      // Send message to Claude
-      document.getElementById('sendBtn').addEventListener('click', sendMessage);
-      document.getElementById('chatInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.ctrlKey) {
-          sendMessage();
-        }
-      });
-
-      // Render preview
-      document.getElementById('renderBtn').addEventListener('click', () => {
-        state.currentRegex = document.getElementById('regexInput').value;
-        state.currentSample = document.getElementById('sampleInput').value;
-        state.currentCode = document.getElementById('codeInput').value;
-        saveState();
-        renderPreview(state.currentRegex, state.currentSample, state.currentCode);
-      });
-
-      // Test with custom input
-      document.getElementById('testBtn').addEventListener('click', () => {
-        const testInput = document.getElementById('testInput').value;
-        if (testInput) {
-          renderPreview(state.currentRegex, testInput, state.currentCode);
-        }
-      });
-
-      // Save result
-      document.getElementById('saveResultBtn').addEventListener('click', () => {
-        const name = prompt(t('enterResultName'));
-        if (name) {
-          state.savedResults.push({
-            name,
-            date: new Date().toISOString(),
-            regex: state.currentRegex,
-            sample: state.currentSample,
-            code: state.currentCode
-          });
-          saveState();
-          renderHistoryList();
-          showMessage(t('resultSaved'), 'success');
-          addLog('info', state.language === 'ko' ? `결과 "${name}"이(가) 저장되었습니다` : `Result "${name}" saved`);
-        }
-      });
-
-      // Close modals on overlay click
-      document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) {
-            overlay.classList.remove('active');
-          }
-        });
-      });
-
-      // Input change handlers
-      document.getElementById('regexInput').addEventListener('change', (e) => {
-        state.currentRegex = e.target.value;
-        saveState();
-      });
-
-      document.getElementById('sampleInput').addEventListener('change', (e) => {
-        state.currentSample = e.target.value;
-        saveState();
-      });
-
-      document.getElementById('codeInput').addEventListener('change', (e) => {
-        state.currentCode = e.target.value;
-        saveState();
-      });
-
-      // Log initial state
-      addLog('info', state.language === 'ko' ? '앱이 로드되었습니다' : 'App loaded');
-      if (state.apiKey) {
-        addLog('info', state.language === 'ko' ? 'API 키가 로컬 저장소에서 복원되었습니다' : 'API key restored from local storage');
-      }
-      if (state.conversationHistory.length > 0) {
-        addLog('cache', state.language === 'ko' ? `캐시된 컨텍스트 복원됨 (${state.conversationHistory.length}개 메시지)` : `Cached context restored (${state.conversationHistory.length} messages)`);
-      }
-    });
-
-    // Send message
     async function sendMessage() {
       const chatInput = document.getElementById('chatInput');
       const message = chatInput.value.trim();
-
       if (!message) return;
 
       const sendBtn = document.getElementById('sendBtn');
@@ -1601,13 +1437,11 @@ Now, fulfill the user's request following these rules precisely. English only.`;
           showMessage(t('regexGenerated'), 'success');
         } else {
           showMessage(t('parseError'), 'error');
-          addLog('error', t('parseError'));
         }
 
         chatInput.value = '';
       } catch (error) {
         showMessage('Error: ' + error.message, 'error');
-        addLog('error', error.message);
       } finally {
         sendBtn.disabled = false;
         sendBtnText.classList.remove('hidden');
@@ -1615,7 +1449,6 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       }
     }
 
-    // Show message
     function showMessage(text, type) {
       const msgEl = document.getElementById('chatMessage');
       msgEl.textContent = text;
@@ -1623,39 +1456,201 @@ Now, fulfill the user's request following these rules precisely. English only.`;
       msgEl.classList.remove('hidden');
     }
 
-    // Hide message
     function hideMessage() {
       document.getElementById('chatMessage').classList.add('hidden');
     }
 
-    // Load saved result
     function loadResult(index) {
       const result = state.savedResults[index];
       if (result) {
         state.currentRegex = result.regex;
         state.currentSample = result.sample;
         state.currentCode = result.code;
-
         document.getElementById('regexInput').value = result.regex;
         document.getElementById('sampleInput').value = result.sample;
         document.getElementById('codeInput').value = result.code;
-
         saveState();
         renderPreview(result.regex, result.sample, result.code);
         document.getElementById('historyModal').classList.remove('active');
-        addLog('info', state.language === 'ko' ? `저장된 결과 "${result.name}" 로드됨` : `Loaded saved result "${result.name}"`);
       }
     }
 
-    // Delete saved result
     function deleteResult(index) {
       if (confirm(t('confirmDelete'))) {
         state.savedResults.splice(index, 1);
         saveState();
         renderHistoryList();
-        addLog('info', state.language === 'ko' ? '결과가 삭제되었습니다' : 'Result deleted');
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.language = btn.dataset.lang;
+          saveState();
+          updateLanguage();
+        });
+      });
+
+      document.getElementById('debugHeader').addEventListener('click', () => {
+        document.getElementById('debugPanel').classList.toggle('collapsed');
+      });
+
+      document.getElementById('clearLogBtn').addEventListener('click', () => {
+        state.debugLogs = [];
+        saveState();
+        renderDebugLog();
+      });
+
+      document.getElementById('exportLogBtn').addEventListener('click', () => {
+        const logText = state.debugLogs.map(log =>
+          `[${log.time}] [${log.type.toUpperCase()}] ${log.message}${log.data ? '\n' + (typeof log.data === 'string' ? log.data : JSON.stringify(log.data, null, 2)) : ''}`
+        ).join('\n\n');
+        const blob = new Blob([logText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `debug-log-${new Date().toISOString().slice(0, 10)}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('settingsBtn').addEventListener('click', () => {
+        document.getElementById('settingsModal').classList.add('active');
+      });
+
+      document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+        document.getElementById('settingsModal').classList.remove('active');
+      });
+
+      document.getElementById('directiveBtn').addEventListener('click', () => {
+        document.getElementById('directiveModal').classList.add('active');
+      });
+
+      document.getElementById('closeDirectiveBtn').addEventListener('click', () => {
+        document.getElementById('directiveModal').classList.remove('active');
+      });
+
+      document.getElementById('historyBtn').addEventListener('click', () => {
+        document.getElementById('historyModal').classList.add('active');
+      });
+
+      document.getElementById('closeHistoryBtn').addEventListener('click', () => {
+        document.getElementById('historyModal').classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+      });
+
+      document.getElementById('saveApiBtn').addEventListener('click', () => {
+        state.apiKey = document.getElementById('apiKeyInput').value;
+        state.model = document.getElementById('modelSelect').value;
+        state.maxTokens = parseInt(document.getElementById('maxTokensInput').value) || 4096;
+        state.maxContext = parseInt(document.getElementById('maxContextInput').value) || 20;
+        saveState();
+        updateUI();
+        showMessage(t('apiSettingsSaved'), 'success');
+        addLog('info', 'API settings saved');
+      });
+
+      document.getElementById('saveSystemPromptBtn').addEventListener('click', () => {
+        state.systemPrompt = document.getElementById('systemPromptInput').value;
+        saveState();
+        showMessage(t('systemPromptSaved'), 'success');
+      });
+
+      document.getElementById('resetSystemPromptBtn').addEventListener('click', () => {
+        state.systemPrompt = DEFAULT_SYSTEM_PROMPT;
+        document.getElementById('systemPromptInput').value = DEFAULT_SYSTEM_PROMPT;
+        saveState();
+        showMessage(t('systemPromptReset'), 'success');
+      });
+
+      document.getElementById('addPromptBtn').addEventListener('click', addPrompt);
+
+      document.getElementById('saveDirectiveBtn').addEventListener('click', () => {
+        state.directive.name = document.getElementById('directiveNameInput').value;
+        state.directive.content = document.getElementById('directiveContentInput').value;
+        state.directive.enabled = document.getElementById('directiveEnabledInput').checked;
+        saveState();
+        showMessage(t('directiveSaved'), 'success');
+        addLog('info', 'Directive saved');
+      });
+
+      document.getElementById('loadDefaultDirectiveBtn').addEventListener('click', () => {
+        document.getElementById('directiveNameInput').value = 'StatusWindow';
+        document.getElementById('directiveContentInput').value = DEFAULT_DIRECTIVE;
+        document.getElementById('directiveEnabledInput').checked = true;
+      });
+
+      document.getElementById('clearCacheBtn').addEventListener('click', () => {
+        const prevCount = state.conversationHistory.length;
+        state.conversationHistory = [];
+        saveState();
+        updateUI();
+        showMessage(t('cacheClearedMsg'), 'success');
+        addLog('cache', `Cache cleared (${prevCount} messages removed)`);
+      });
+
+      document.getElementById('sendBtn').addEventListener('click', sendMessage);
+      document.getElementById('chatInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) sendMessage();
+      });
+
+      document.getElementById('renderBtn').addEventListener('click', () => {
+        state.currentRegex = document.getElementById('regexInput').value;
+        state.currentSample = document.getElementById('sampleInput').value;
+        state.currentCode = document.getElementById('codeInput').value;
+        saveState();
+        renderPreview(state.currentRegex, state.currentSample, state.currentCode);
+      });
+
+      document.getElementById('testBtn').addEventListener('click', () => {
+        const testInput = document.getElementById('testInput').value;
+        if (testInput) renderPreview(state.currentRegex, testInput, state.currentCode);
+      });
+
+      document.getElementById('saveResultBtn').addEventListener('click', () => {
+        const name = prompt(t('enterResultName'));
+        if (name) {
+          state.savedResults.push({
+            name,
+            date: new Date().toISOString(),
+            regex: state.currentRegex,
+            sample: state.currentSample,
+            code: state.currentCode
+          });
+          saveState();
+          renderHistoryList();
+          showMessage(t('resultSaved'), 'success');
+        }
+      });
+
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) overlay.classList.remove('active');
+        });
+      });
+
+      ['regexInput', 'sampleInput', 'codeInput'].forEach(id => {
+        document.getElementById(id).addEventListener('change', (e) => {
+          state['current' + id.replace('Input', '').charAt(0).toUpperCase() + id.replace('Input', '').slice(1)] = e.target.value;
+          saveState();
+        });
+      });
+
+      addLog('info', state.language === 'ko' ? '앱 로드됨' : 'App loaded');
+      if (state.apiKey) addLog('info', 'API key restored from storage');
+      if (state.conversationHistory.length > 0) addLog('cache', `Cached context: ${state.conversationHistory.length} messages`);
+    });
   </script>
 </body>
 </html>
