@@ -897,6 +897,16 @@
             <span style="color: var(--text-secondary);" data-i18n="noMatchYet">Run a test to see match results...</span>
           </div>
         </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+          <label>🎨 <span data-i18n="styleEditor">Style Editor</span></label>
+          <textarea id="customStylesInput" class="code-input" style="min-height: 120px; font-size: 12px;"></textarea>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button class="btn btn-primary" id="applyStylesBtn" style="flex: 1;">✓ <span data-i18n="applyStyles">Apply</span></button>
+            <button class="btn btn-secondary" id="resetStylesBtn">↺ <span data-i18n="resetStyles">Reset</span></button>
+          </div>
+          <p class="info-text" data-i18n="styleEditorNote">Edit CSS to customize preview appearance (font-size, colors, etc.)</p>
+        </div>
       </div>
     </div>
 
@@ -1125,7 +1135,13 @@
         directiveGenerated: '지침이 생성되었습니다!',
         copied: '복사되었습니다!',
         loadedFromHistory: '기록에서 불러왔습니다 (컨텍스트 초기화됨)',
-        hasDirective: '지침 포함'
+        hasDirective: '지침 포함',
+        styleEditor: '스타일 에디터',
+        applyStyles: '적용',
+        resetStyles: '초기화',
+        styleEditorNote: 'CSS를 편집하여 프리뷰 모양을 조정하세요 (글자 크기, 색상 등)',
+        stylesApplied: '스타일이 적용되었습니다!',
+        stylesReset: '스타일이 초기화되었습니다!'
       },
       en: {
         title: 'Regex Tester with Claude AI',
@@ -1209,19 +1225,30 @@
         directiveGenerated: 'Directive generated!',
         copied: 'Copied!',
         loadedFromHistory: 'Loaded from history (context cleared)',
-        hasDirective: 'Has directive'
+        hasDirective: 'Has directive',
+        styleEditor: 'Style Editor',
+        applyStyles: 'Apply',
+        resetStyles: 'Reset',
+        styleEditorNote: 'Edit CSS to customize preview appearance (font-size, colors, etc.)',
+        stylesApplied: 'Styles applied!',
+        stylesReset: 'Styles reset!'
       }
     };
 
-    const DEFAULT_SYSTEM_PROMPT = `You are an expert front-end developer specializing in creating compact, stylish, and efficient HTML and CSS components.
+    const DEFAULT_SYSTEM_PROMPT = `You are an expert front-end developer and AI prompt engineer specializing in creating compact, stylish UI components and AI directives.
 
-Your primary task is to generate a complete package for a display UI. This package includes a regular expression, a sample text that matches it, and the HTML/CSS code.
+Your task is to generate a complete package including:
+1. A regular expression pattern
+2. A sample text that matches it
+3. HTML/CSS code for display
+4. AI directive documents in Korean and English
 
 **CRITICAL FORMATTING RULES:**
 1. Always escape special regex characters properly (use \\\\ for backslash in regex)
 2. Do NOT include any explanations outside the specified blocks
 3. Ensure all brackets, braces, and tags are properly closed
 4. Test your regex mentally before outputting
+5. Directives must be comprehensive and usable as AI system prompts
 
 **You must output your response in the following exact format:**
 
@@ -1237,6 +1264,20 @@ Your primary task is to generate a complete package for a display UI. This packa
 </style>
 <!-- Your generated HTML here, using placeholders like $1, $2 -->
 [/CODE]
+[KOREAN]
+(AI 지침 문서 - 한국어)
+- 이 정규식의 목적과 구조
+- 출력 형식 규칙
+- 올바른/잘못된 예시
+- AI가 따라야 할 상세 규칙
+[/KOREAN]
+[ENGLISH]
+(AI Directive Document - English)
+- Purpose and structure of this regex
+- Output format rules
+- Correct/incorrect examples
+- Detailed rules for AI to follow
+[/ENGLISH]
 
 **Example Request:**
 "Create a clock display with [Time: HH:mm:ss] format"
@@ -1261,6 +1302,34 @@ Your primary task is to generate a complete package for a display UI. This packa
 </style>
 <div class="clock-display">⏰ $1</div>
 [/CODE]
+[KOREAN]
+## 시간 표시 시스템 지침
+
+이 시스템은 [Time: HH:mm:ss] 형식의 시간 정보를 파싱하여 표시합니다.
+
+**형식 규칙:**
+- 패턴: [Time: 시:분:초]
+- 24시간 형식 사용
+- 모든 필드는 2자리
+
+**예시:**
+- 올바름: [Time: 14:30:55]
+- 잘못됨: [Time: 2:30 PM]
+[/KOREAN]
+[ENGLISH]
+## Time Display System Directive
+
+This system parses and displays time information in [Time: HH:mm:ss] format.
+
+**Format Rules:**
+- Pattern: [Time: hours:minutes:seconds]
+- Use 24-hour format
+- All fields must be 2 digits
+
+**Examples:**
+- Correct: [Time: 14:30:55]
+- Incorrect: [Time: 2:30 PM]
+[/ENGLISH]
 
 Now, fulfill the user's request following these rules precisely.`;
 
@@ -1292,6 +1361,19 @@ Code Template:
 
 Generate a comprehensive directive document that can be used to train AI systems or as a system prompt for generating similar outputs.`;
 
+    const DEFAULT_CUSTOM_STYLES = `/* 프리뷰 스타일 커스터마이징 */
+/* Customize preview styles here */
+
+.rendered-output {
+  font-size: 16px;
+  /* 글자 크기 조정 */
+}
+
+/* 프리뷰 영역 배경 */
+.preview-content {
+  /* background: #000; */
+}`;
+
     let state = {
       apiKey: '',
       model: 'claude-sonnet-4-5-20250929',
@@ -1309,7 +1391,8 @@ Generate a comprehensive directive document that can be used to train AI systems
       generatedDirective: {
         korean: '',
         english: ''
-      }
+      },
+      customStyles: DEFAULT_CUSTOM_STYLES
     };
 
     function addLog(type, message, data = null) {
@@ -1412,10 +1495,24 @@ Generate a comprehensive directive document that can be used to train AI systems
         }
       }
 
+      // Update custom styles
+      document.getElementById('customStylesInput').value = state.customStyles;
+      applyCustomStyles();
+
       renderPromptList();
       renderHistoryList();
       renderDebugLog();
       updatePreviewDimensions();
+    }
+
+    function applyCustomStyles() {
+      let styleEl = document.getElementById('customStyleTag');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'customStyleTag';
+        document.head.appendChild(styleEl);
+      }
+      styleEl.textContent = state.customStyles;
     }
 
     function renderPromptList() {
@@ -1655,11 +1752,15 @@ Please reference this context when processing my request.`;
       const regexMatch = response.match(/\[REGEXP\]([\s\S]*?)\[\/REGEXP\]/);
       const sampleMatch = response.match(/\[SAMPLE\]([\s\S]*?)\[\/SAMPLE\]/);
       const codeMatch = response.match(/\[CODE\]([\s\S]*?)\[\/CODE\]/);
+      const koreanMatch = response.match(/\[KOREAN\]([\s\S]*?)\[\/KOREAN\]/);
+      const englishMatch = response.match(/\[ENGLISH\]([\s\S]*?)\[\/ENGLISH\]/);
 
       return {
         regex: regexMatch ? regexMatch[1].trim() : '',
         sample: sampleMatch ? sampleMatch[1].trim() : '',
-        code: codeMatch ? codeMatch[1].trim() : ''
+        code: codeMatch ? codeMatch[1].trim() : '',
+        korean: koreanMatch ? koreanMatch[1].trim() : '',
+        english: englishMatch ? englishMatch[1].trim() : ''
       };
     }
 
@@ -1747,6 +1848,16 @@ Please reference this context when processing my request.`;
           document.getElementById('regexInput').value = parsed.regex;
           document.getElementById('sampleInput').value = parsed.sample;
           document.getElementById('codeInput').value = parsed.code;
+
+          // Update directives if present
+          if (parsed.korean || parsed.english) {
+            state.generatedDirective = {
+              korean: parsed.korean || state.generatedDirective.korean,
+              english: parsed.english || state.generatedDirective.english
+            };
+            document.getElementById('directiveKorean').textContent = state.generatedDirective.korean;
+            document.getElementById('directiveEnglish').textContent = state.generatedDirective.english;
+          }
 
           saveState();
           renderPreview(parsed.regex, parsed.sample, parsed.code);
@@ -1915,6 +2026,22 @@ Please reference this context when processing my request.`;
       document.getElementById('addPromptBtn').addEventListener('click', addPrompt);
 
       document.getElementById('generateDirectiveBtn').addEventListener('click', generateDirective);
+
+      document.getElementById('applyStylesBtn').addEventListener('click', () => {
+        state.customStyles = document.getElementById('customStylesInput').value;
+        applyCustomStyles();
+        saveState();
+        showMessage(t('stylesApplied'), 'success');
+        addLog('info', 'Custom styles applied');
+      });
+
+      document.getElementById('resetStylesBtn').addEventListener('click', () => {
+        state.customStyles = DEFAULT_CUSTOM_STYLES;
+        document.getElementById('customStylesInput').value = DEFAULT_CUSTOM_STYLES;
+        applyCustomStyles();
+        saveState();
+        showMessage(t('stylesReset'), 'success');
+      });
 
       document.getElementById('copyKoreanBtn').addEventListener('click', () => {
         copyToClipboard(state.generatedDirective.korean || '', 'copyKoreanBtn');
