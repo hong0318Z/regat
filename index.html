@@ -923,6 +923,13 @@
         <p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 13px;" data-i18n="directiveGenInfo">
           This generates AI output rules based on your current regex pattern. The generated directive can be used for AI training or system prompts.
         </p>
+
+        <div class="input-group">
+          <label>📝 <span data-i18n="directiveRequirements">Custom Requirements</span></label>
+          <textarea id="directiveRequirementsInput" class="sample-input" style="min-height: 80px;" data-i18n-placeholder="directiveRequirementsPlaceholder"></textarea>
+          <p class="info-text" data-i18n="directiveRequirementsNote">Specify when to generate, formatting rules, trigger keywords, etc.</p>
+        </div>
+
         <div class="directive-gen-controls">
           <button class="btn btn-primary" id="generateDirectiveBtn">🤖 <span data-i18n="generateDirective">Generate Directive</span></button>
           <span id="directiveGenLoader" class="loading hidden"></span>
@@ -1141,7 +1148,10 @@
         resetStyles: '초기화',
         styleEditorNote: 'CSS를 편집하여 프리뷰 모양을 조정하세요 (글자 크기, 색상 등)',
         stylesApplied: '스타일이 적용되었습니다!',
-        stylesReset: '스타일이 초기화되었습니다!'
+        stylesReset: '스타일이 초기화되었습니다!',
+        directiveRequirements: '추가 요구사항',
+        directiveRequirementsPlaceholder: '예: /상태창 키워드 입력 시 생성, 모든 값은 한국어로, 빈 필드는 "없음"으로 표시...',
+        directiveRequirementsNote: '언제 생성할지, 포맷 규칙, 트리거 키워드 등을 지정하세요.'
       },
       en: {
         title: 'Regex Tester with Claude AI',
@@ -1231,7 +1241,10 @@
         resetStyles: 'Reset',
         styleEditorNote: 'Edit CSS to customize preview appearance (font-size, colors, etc.)',
         stylesApplied: 'Styles applied!',
-        stylesReset: 'Styles reset!'
+        stylesReset: 'Styles reset!',
+        directiveRequirements: 'Custom Requirements',
+        directiveRequirementsPlaceholder: 'e.g., Generate when /status keyword is entered, all values in Korean, empty fields show "None"...',
+        directiveRequirementsNote: 'Specify when to generate, formatting rules, trigger keywords, etc.'
       }
     };
 
@@ -1392,7 +1405,8 @@ Generate a comprehensive directive document that can be used to train AI systems
         korean: '',
         english: ''
       },
-      customStyles: DEFAULT_CUSTOM_STYLES
+      customStyles: DEFAULT_CUSTOM_STYLES,
+      directiveRequirements: ''
     };
 
     function addLog(type, message, data = null) {
@@ -1498,6 +1512,9 @@ Generate a comprehensive directive document that can be used to train AI systems
       // Update custom styles
       document.getElementById('customStylesInput').value = state.customStyles;
       applyCustomStyles();
+
+      // Update directive requirements
+      document.getElementById('directiveRequirementsInput').value = state.directiveRequirements;
 
       renderPromptList();
       renderHistoryList();
@@ -1681,6 +1698,11 @@ Please reference this context when processing my request.`;
       const regex = document.getElementById('regexInput').value.trim();
       const sample = document.getElementById('sampleInput').value.trim();
       const code = document.getElementById('codeInput').value.trim();
+      const customRequirements = document.getElementById('directiveRequirementsInput').value.trim();
+
+      // Save requirements to state
+      state.directiveRequirements = customRequirements;
+      saveState();
 
       if (!regex) {
         showMessage(state.language === 'ko' ? '정규식을 먼저 입력하세요.' : 'Please enter a regex pattern first.', 'error');
@@ -1693,10 +1715,15 @@ Please reference this context when processing my request.`;
       loader.classList.remove('hidden');
 
       try {
-        const prompt = DIRECTIVE_GENERATION_PROMPT
+        let prompt = DIRECTIVE_GENERATION_PROMPT
           .replace('{REGEX}', regex)
           .replace('{SAMPLE}', sample || '(no sample provided)')
           .replace('{CODE}', code || '(no code template provided)');
+
+        // Add custom requirements if provided
+        if (customRequirements) {
+          prompt += `\n\n**Additional Requirements from User:**\n${customRequirements}\n\nMake sure to incorporate these requirements into the directive document.`;
+        }
 
         // Use separate context for directive generation
         const response = await fetch('https://api.anthropic.com/v1/messages', {
