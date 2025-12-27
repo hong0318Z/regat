@@ -166,12 +166,19 @@
 
     .preview-wrapper {
       position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 Aspect Ratio */
       background: var(--bg-primary);
-      border-radius: 8px;
       border: 1px solid var(--border);
       overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .preview-wrapper.auto-size {
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    }
+
+    .preview-wrapper.virtual-size {
+      /* Size set by JavaScript */
     }
 
     .preview-content {
@@ -187,20 +194,27 @@
       overflow: auto;
     }
 
+    .preview-wrapper:not(.auto-size) .preview-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
     .preview-placeholder {
       color: var(--text-secondary);
       text-align: center;
     }
 
-    .preview-dimensions {
+    .preview-scale-info {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      background: rgba(0,0,0,0.5);
-      padding: 3px 8px;
-      border-radius: 4px;
+      top: 10px;
+      left: 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.6);
+      padding: 2px 6px;
+      border-radius: 3px;
+      z-index: 10;
     }
 
     .main-layout {
@@ -815,20 +829,33 @@
       </div>
     </header>
 
-    <!-- Live Preview at Top with 16:9 -->
+    <!-- Live Preview at Top with Virtual Resolution -->
     <div class="preview-section">
       <div class="preview-container">
         <div class="preview-header">
-          <h2 class="preview-title">👁️ <span data-i18n="livePreview">Live Preview</span> (16:9)</h2>
-          <div style="display: flex; gap: 10px;">
+          <h2 class="preview-title">👁️ <span data-i18n="livePreview">Live Preview</span></h2>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="resolutionSelect" style="padding: 6px 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 4px; font-size: 12px;">
+              <option value="auto">Auto (16:9)</option>
+              <option value="1920x1080">1920×1080 (FHD)</option>
+              <option value="1280x720">1280×720 (HD)</option>
+              <option value="854x480">854×480 (480p)</option>
+              <option value="640x360">640×360 (360p)</option>
+              <option value="426x240">426×240 (240p)</option>
+            </select>
             <button class="btn btn-secondary" id="saveResultBtn">💾 <span data-i18n="saveResult">Save Result</span></button>
           </div>
         </div>
-        <div class="preview-wrapper" id="previewWrapper">
-          <div class="preview-content" id="previewArea">
-            <div class="preview-placeholder" data-i18n="previewPlaceholder">Preview will appear here after rendering...</div>
+        <div class="preview-outer" id="previewOuter" style="background: #000; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 200px;">
+          <div class="preview-wrapper" id="previewWrapper">
+            <div class="preview-content" id="previewArea">
+              <div class="preview-placeholder" data-i18n="previewPlaceholder">Preview will appear here after rendering...</div>
+            </div>
           </div>
-          <div class="preview-dimensions" id="previewDimensions">--</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-secondary);">
+          <span><span data-i18n="virtualRes">Virtual Resolution</span>: <span id="virtualResolution">Auto</span></span>
+          <span><span data-i18n="actualSize">Actual Size</span>: <span id="previewDimensions">--</span></span>
         </div>
       </div>
     </div>
@@ -899,13 +926,13 @@
         </div>
 
         <div class="input-group" style="margin-top: 20px;">
-          <label>🎨 <span data-i18n="styleEditor">Style Editor</span></label>
+          <label>🎨 <span data-i18n="styleEditor">Style Editor</span> <span style="font-size: 11px; color: var(--text-secondary);" data-i18n="styleEditorLinked">(linked to CODE)</span></label>
           <textarea id="customStylesInput" class="code-input" style="min-height: 120px; font-size: 12px;"></textarea>
           <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="btn btn-primary" id="applyStylesBtn" style="flex: 1;">✓ <span data-i18n="applyStyles">Apply</span></button>
-            <button class="btn btn-secondary" id="resetStylesBtn">↺ <span data-i18n="resetStyles">Reset</span></button>
+            <button class="btn btn-primary" id="applyStylesBtn" style="flex: 1;">✓ <span data-i18n="applyToCode">Apply to CODE</span></button>
+            <button class="btn btn-secondary" id="extractStylesBtn">⬇ <span data-i18n="extractFromCode">Extract</span></button>
           </div>
-          <p class="info-text" data-i18n="styleEditorNote">Edit CSS to customize preview appearance (font-size, colors, etc.)</p>
+          <p class="info-text" data-i18n="styleEditorNote">Edit CSS from generated CODE. Click Extract to load, Apply to save back.</p>
         </div>
       </div>
     </div>
@@ -1151,7 +1178,15 @@
         stylesReset: '스타일이 초기화되었습니다!',
         directiveRequirements: '추가 요구사항',
         directiveRequirementsPlaceholder: '예: /상태창 키워드 입력 시 생성, 모든 값은 한국어로, 빈 필드는 "없음"으로 표시...',
-        directiveRequirementsNote: '언제 생성할지, 포맷 규칙, 트리거 키워드 등을 지정하세요.'
+        directiveRequirementsNote: '언제 생성할지, 포맷 규칙, 트리거 키워드 등을 지정하세요.',
+        virtualRes: '가상 해상도',
+        actualSize: '실제 크기',
+        styleEditorLinked: '(CODE 연동)',
+        applyToCode: 'CODE에 적용',
+        extractFromCode: '추출',
+        stylesExtracted: 'CODE에서 스타일을 추출했습니다!',
+        noStylesFound: 'CODE에 <style> 태그가 없습니다.',
+        stylesAppliedToCode: '스타일이 CODE에 적용되었습니다!'
       },
       en: {
         title: 'Regex Tester with Claude AI',
@@ -1244,7 +1279,15 @@
         stylesReset: 'Styles reset!',
         directiveRequirements: 'Custom Requirements',
         directiveRequirementsPlaceholder: 'e.g., Generate when /status keyword is entered, all values in Korean, empty fields show "None"...',
-        directiveRequirementsNote: 'Specify when to generate, formatting rules, trigger keywords, etc.'
+        directiveRequirementsNote: 'Specify when to generate, formatting rules, trigger keywords, etc.',
+        virtualRes: 'Virtual Resolution',
+        actualSize: 'Actual Size',
+        styleEditorLinked: '(linked to CODE)',
+        applyToCode: 'Apply to CODE',
+        extractFromCode: 'Extract',
+        stylesExtracted: 'Styles extracted from CODE!',
+        noStylesFound: 'No <style> tag found in CODE.',
+        stylesAppliedToCode: 'Styles applied to CODE!'
       }
     };
 
@@ -1374,19 +1417,6 @@ Code Template:
 
 Generate a comprehensive directive document that can be used to train AI systems or as a system prompt for generating similar outputs.`;
 
-    const DEFAULT_CUSTOM_STYLES = `/* 프리뷰 스타일 커스터마이징 */
-/* Customize preview styles here */
-
-.rendered-output {
-  font-size: 16px;
-  /* 글자 크기 조정 */
-}
-
-/* 프리뷰 영역 배경 */
-.preview-content {
-  /* background: #000; */
-}`;
-
     let state = {
       apiKey: '',
       model: 'claude-sonnet-4-5-20250929',
@@ -1405,8 +1435,9 @@ Generate a comprehensive directive document that can be used to train AI systems
         korean: '',
         english: ''
       },
-      customStyles: DEFAULT_CUSTOM_STYLES,
-      directiveRequirements: ''
+      customStyles: '',
+      directiveRequirements: '',
+      selectedResolution: 'auto'
     };
 
     function addLog(type, message, data = null) {
@@ -1478,6 +1509,75 @@ Generate a comprehensive directive document that can be used to train AI systems
       dims.textContent = `${wrapper.offsetWidth} × ${wrapper.offsetHeight}px`;
     }
 
+    function updateResolution() {
+      const resolution = state.selectedResolution;
+      const wrapper = document.getElementById('previewWrapper');
+      const outer = document.getElementById('previewOuter');
+      const virtualResEl = document.getElementById('virtualResolution');
+
+      if (resolution === 'auto') {
+        wrapper.className = 'preview-wrapper auto-size';
+        wrapper.style.width = '';
+        wrapper.style.height = '';
+        wrapper.style.transform = '';
+        outer.style.height = '';
+        virtualResEl.textContent = 'Auto (16:9)';
+      } else {
+        const [width, height] = resolution.split('x').map(Number);
+        const containerWidth = outer.offsetWidth - 20; // padding
+        const scale = Math.min(1, containerWidth / width);
+
+        wrapper.className = 'preview-wrapper virtual-size';
+        wrapper.style.width = width + 'px';
+        wrapper.style.height = height + 'px';
+        wrapper.style.transform = `scale(${scale})`;
+        wrapper.style.transformOrigin = 'center center';
+        outer.style.height = (height * scale + 20) + 'px';
+        virtualResEl.textContent = `${width}×${height} (${Math.round(scale * 100)}%)`;
+      }
+
+      setTimeout(updatePreviewDimensions, 100);
+    }
+
+    function extractStylesFromCode() {
+      const code = document.getElementById('codeInput').value;
+      const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+
+      if (styleMatch) {
+        state.customStyles = styleMatch[1].trim();
+        document.getElementById('customStylesInput').value = state.customStyles;
+        saveState();
+        showMessage(t('stylesExtracted'), 'success');
+        addLog('info', 'Styles extracted from CODE');
+      } else {
+        showMessage(t('noStylesFound'), 'error');
+      }
+    }
+
+    function applyStylesToCode() {
+      const code = document.getElementById('codeInput').value;
+      const newStyles = document.getElementById('customStylesInput').value;
+
+      let newCode;
+      if (code.match(/<style[^>]*>[\s\S]*?<\/style>/i)) {
+        // Replace existing style
+        newCode = code.replace(/<style[^>]*>[\s\S]*?<\/style>/i, `<style>\n${newStyles}\n</style>`);
+      } else {
+        // Add new style at the beginning
+        newCode = `<style>\n${newStyles}\n</style>\n${code}`;
+      }
+
+      document.getElementById('codeInput').value = newCode;
+      state.currentCode = newCode;
+      state.customStyles = newStyles;
+      saveState();
+
+      // Re-render preview
+      renderPreview(state.currentRegex, state.currentSample, state.currentCode);
+      showMessage(t('stylesAppliedToCode'), 'success');
+      addLog('info', 'Styles applied to CODE');
+    }
+
     function updateUI() {
       const statusDot = document.getElementById('statusDot');
       const statusText = document.getElementById('statusText');
@@ -1509,20 +1609,23 @@ Generate a comprehensive directive document that can be used to train AI systems
         }
       }
 
-      // Update custom styles
+      // Update custom styles editor
       document.getElementById('customStylesInput').value = state.customStyles;
-      applyCustomStyles();
 
       // Update directive requirements
       document.getElementById('directiveRequirementsInput').value = state.directiveRequirements;
 
+      // Update resolution selector
+      document.getElementById('resolutionSelect').value = state.selectedResolution;
+      updateResolution();
+
       renderPromptList();
       renderHistoryList();
       renderDebugLog();
-      updatePreviewDimensions();
     }
 
     function applyCustomStyles() {
+      // This now just updates the style in the preview without modifying CODE
       let styleEl = document.getElementById('customStyleTag');
       if (!styleEl) {
         styleEl = document.createElement('style');
@@ -1962,9 +2065,8 @@ Please reference this context when processing my request.`;
     document.addEventListener('DOMContentLoaded', () => {
       loadState();
 
-      // Update preview dimensions on resize
-      window.addEventListener('resize', updatePreviewDimensions);
-      setTimeout(updatePreviewDimensions, 100);
+      // Initial resolution setup
+      setTimeout(updateResolution, 100);
 
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2054,20 +2156,18 @@ Please reference this context when processing my request.`;
 
       document.getElementById('generateDirectiveBtn').addEventListener('click', generateDirective);
 
-      document.getElementById('applyStylesBtn').addEventListener('click', () => {
-        state.customStyles = document.getElementById('customStylesInput').value;
-        applyCustomStyles();
+      document.getElementById('applyStylesBtn').addEventListener('click', applyStylesToCode);
+
+      document.getElementById('extractStylesBtn').addEventListener('click', extractStylesFromCode);
+
+      document.getElementById('resolutionSelect').addEventListener('change', (e) => {
+        state.selectedResolution = e.target.value;
         saveState();
-        showMessage(t('stylesApplied'), 'success');
-        addLog('info', 'Custom styles applied');
+        updateResolution();
       });
 
-      document.getElementById('resetStylesBtn').addEventListener('click', () => {
-        state.customStyles = DEFAULT_CUSTOM_STYLES;
-        document.getElementById('customStylesInput').value = DEFAULT_CUSTOM_STYLES;
-        applyCustomStyles();
-        saveState();
-        showMessage(t('stylesReset'), 'success');
+      window.addEventListener('resize', () => {
+        updateResolution();
       });
 
       document.getElementById('copyKoreanBtn').addEventListener('click', () => {
