@@ -1440,6 +1440,28 @@ Generate a comprehensive directive document that can be used to train AI systems
       selectedResolution: 'auto'
     };
 
+    // Debounce helper for real-time preview
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // Debounced preview update (150ms delay for smooth typing)
+    const debouncedPreview = debounce(() => {
+      const regex = document.getElementById('regexInput').value;
+      const sample = document.getElementById('sampleInput').value;
+      const code = document.getElementById('codeInput').value;
+
+      state.currentRegex = regex;
+      state.currentSample = sample;
+      state.currentCode = code;
+
+      renderPreview(regex, sample, code);
+    }, 150);
+
     function addLog(type, message, data = null) {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
@@ -1622,6 +1644,9 @@ Generate a comprehensive directive document that can be used to train AI systems
       renderPromptList();
       renderHistoryList();
       renderDebugLog();
+
+      // Render preview with loaded state
+      renderPreview(state.currentRegex, state.currentSample, state.currentCode);
     }
 
     function applyCustomStyles() {
@@ -2234,12 +2259,18 @@ Please reference this context when processing my request.`;
       });
 
       ['regexInput', 'sampleInput', 'codeInput'].forEach(id => {
-        document.getElementById(id).addEventListener('change', (e) => {
+        const el = document.getElementById(id);
+
+        // Update state on change (blur)
+        el.addEventListener('change', (e) => {
           if (id === 'regexInput') state.currentRegex = e.target.value;
           else if (id === 'sampleInput') state.currentSample = e.target.value;
           else if (id === 'codeInput') state.currentCode = e.target.value;
           saveState();
         });
+
+        // Real-time preview update on input (debounced)
+        el.addEventListener('input', debouncedPreview);
       });
 
       addLog('info', state.language === 'ko' ? '앱 로드됨' : 'App loaded');
